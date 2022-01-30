@@ -26,6 +26,8 @@ const gulpHtmlImgWrapper = function (userParams) {
         ...userParams,
       };
 
+      const EXCLUDE_ATTR = 'ghiw-exclude';
+
       const EXTENSION_REGEX = /(?<=src=[\'\"][\w\W]*)\.[\w]+(?=[\'\"])/i;
       const IMG_CLASS_REGEX = /<img[^>]*(class=[\"\']\S+[\"\'])[^>]*>/i;
       const IMG_SRC_REGEX = /<img[^>]*src=[\"\'](\S+)[\"\'][^>]*>/i;
@@ -56,6 +58,10 @@ const gulpHtmlImgWrapper = function (userParams) {
       );
 
       const newImages = images.map((image) => {
+        if (image.includes(EXCLUDE_ATTR)) {
+          return image.replace(EXCLUDE_ATTR, '');
+        }
+
         if (EXTENSION_REGEX.test(image)) {
           const imageExt = image.match(EXTENSION_REGEX)[0];
           const srcValueWithoutExt = image
