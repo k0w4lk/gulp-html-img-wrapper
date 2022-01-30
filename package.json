@@ -1,0 +1,27 @@
+{
+  "name": "gulp-html-img-wrapper",
+  "version": "1.0.0",
+  "description": "Gulp plugin for wrapping the <img> tag with <picture> adding <source> tag in HTML files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k0w4lk/gulp-html-img-wrapper.git"
+  },
+  "keywords": [
+    "gulp",
+    "webp",
+    "html",
+    "img",
+    "picture",
+    "plugin"
+  ],
+  "author": "k0w4lk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/k0w4lk/gulp-html-img-wrapper/issues"
+  },
+  "homepage": "https://github.com/k0w4lk/gulp-html-img-wrapper#readme"
+}
