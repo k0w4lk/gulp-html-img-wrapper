@@ -66,7 +66,7 @@ const gulpHtmlImgWrapper = function (userParams) {
           const imageExt = image.match(EXTENSION_REGEX)[0];
           const srcValueWithoutExt = image
             .match(IMG_SRC_REGEX)[1]
-            .replace(EXTENSION_REGEX, '');
+            .replace(imageExt, '');
           let classAttr;
 
           if (!params.extensions.includes(imageExt)) {
@@ -84,9 +84,9 @@ const gulpHtmlImgWrapper = function (userParams) {
             '<picture' +
             `${classAttr ? ' ' + classAttr : ''}` +
             '>' +
-            '<source srcset=' +
+            "<source srcset='" +
             srcValueWithoutExt +
-            ".webp type='image/webp'>" +
+            ".webp' type='image/webp'>" +
             image +
             '</picture>'
           );
