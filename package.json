@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/k0w4lk/gulp-html-img-wrapper/issues"
   },
-  "homepage": "https://github.com/k0w4lk/gulp-html-img-wrapper#readme"
+  "homepage": "https://github.com/k0w4lk/gulp-html-img-wrapper#readme",
+  "dependencies": {
+    "gulp-util": "^3.0.8",
+    "through2": "^4.0.2"
+  }
 }
