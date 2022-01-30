@@ -5,16 +5,7 @@ const pluginName = 'gulp-html-img-wrapper';
 
 const PluginError = gulpUtil.PluginError;
 
-const gulpHtmlImgWrapper = function (userExtensions) {
-  const extensions = userExtensions || [
-    'jpg',
-    'png',
-    'jpeg',
-    'JPG',
-    'PNG',
-    'JPEG',
-  ];
-
+const gulpHtmlImgWrapper = function (userParams) {
   return through.obj(function (file, enc, cb) {
     if (file.isNull()) {
       cb(null, file);
@@ -29,75 +20,98 @@ const gulpHtmlImgWrapper = function (userExtensions) {
     }
 
     try {
-      const CLASS_REGEX =
-        /(?:class)=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/gim;
-      const EXTENSION_REGEX = /[^\\]*\.(\w+)$/i;
-      const IMG_REGEX = /<img([^>]*)src=[\"\'](\S+)[\"\']([^>]*)>/;
-      const PICTURE_REGEX = /([\s\S]*?<\/picture>)([\s\S]*)/;
-      const IMG_SPLITTER = '<img ';
-      const PICTURE_SPLITTER = '<picture>';
+      const params = {
+        classMove: false,
+        extensions: ['.jpg', '.png', '.jpeg'],
+        ...userParams,
+      };
 
-      const data = file.contents
-        .toString()
-        .split(PICTURE_SPLITTER)
-        .map(function (line) {
-          let picture = '';
+      const EXTENSION_REGEX = /(?<=src=[\'\"][\w\W]*)\.[\w]+(?=[\'\"])/i;
+      const IMG_CLASS_REGEX = /<img[^>]*(class=[\"\']\S+[\"\'])[^>]*>/i;
+      const IMG_SRC_REGEX = /<img[^>]*src=[\"\'](\S+)[\"\'][^>]*>/i;
+      const IMG_REGEX = /<img[^>]*src=[\"|']([^\"\s]+)[\"|'][^>]*>/gi;
+      const PICTURE_REGEX = /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
+      const COMMENTS_REGEX =
+        /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
 
-          if (PICTURE_REGEX.test(line)) {
-            const lineA = line.match(PICTURE_REGEX);
-            picture = lineA[1];
-            line = lineA[2];
+      const data = file.contents.toString();
+
+      const comments = data.match(COMMENTS_REGEX);
+      const pictures = data.match(PICTURE_REGEX);
+      const images = data.match(IMG_REGEX);
+
+      const noCommentsHtml = data.replace(
+        COMMENTS_REGEX,
+        `{{ ${pluginName}__insert-comment }}`
+      );
+
+      const noPicturesHtml = noCommentsHtml.replace(
+        PICTURE_REGEX,
+        `{{ ${pluginName}__insert-picture }}`
+      );
+
+      const noImagesHtml = noPicturesHtml.replace(
+        IMG_REGEX,
+        `{{ ${pluginName}__insert-image }}`
+      );
+
+      const newImages = images.map((image) => {
+        if (EXTENSION_REGEX.test(image)) {
+          const imageExt = image.match(EXTENSION_REGEX)[0];
+          const srcValueWithoutExt = image
+            .match(IMG_SRC_REGEX)[1]
+            .replace(EXTENSION_REGEX, '');
+          let classAttr;
+
+          if (!params.extensions.includes(imageExt)) {
+            return image;
           }
 
-          if (~line.indexOf(IMG_SPLITTER)) {
-            const lineNew = line
-              .split(IMG_SPLITTER)
-              .map(function (subLine) {
-                const lineImg = IMG_SPLITTER + subLine;
-
-                if (IMG_REGEX.test(lineImg)) {
-                  const regexpArray = lineImg.match(IMG_REGEX);
-                  const imgTag = regexpArray[0];
-                  const url = regexpArray[2];
-                  const urlExt = url.match(EXTENSION_REGEX)[1];
-                  if (!~url.indexOf('.webp')) {
-                    let newHtml;
-                    if (extensions.includes(urlExt)) {
-                      let newImgTag = imgTag;
-                      let newUrl = url.replace(urlExt, 'webp');
-                      let imgClass = newImgTag.match(CLASS_REGEX)?.[0];
-
-                      if (imgClass !== undefined) {
-                        newImgTag = newImgTag.replace(imgClass, '');
-                        imgClass = ' ' + imgClass;
-                      } else {
-                        imgClass = '';
-                      }
-
-                      newHtml =
-                        '<picture' +
-                        imgClass +
-                        '><source srcset="' +
-                        newUrl +
-                        '" type="image/webp">' +
-                        newImgTag +
-                        '</picture>';
-                    } else {
-                      newHtml = imgTag;
-                    }
-                    subLine = lineImg.replace(imgTag, newHtml);
-                  }
-                }
-                return subLine;
-              })
-              .join('');
-            line = lineNew;
+          if (params.classMove) {
+            if (IMG_CLASS_REGEX.test(image)) {
+              classAttr = image.match(IMG_CLASS_REGEX)[1];
+              image = image.replace(classAttr, '');
+            }
           }
-          return picture + line;
-        })
-        .join(PICTURE_SPLITTER);
 
-      file.contents = new Buffer.from(data);
+          return (
+            '<picture' +
+            `${classAttr ? ' ' + classAttr : ''}` +
+            '>' +
+            '<source srcset=' +
+            srcValueWithoutExt +
+            ".webp type='image/webp'>" +
+            image +
+            '</picture>'
+          );
+        }
+        return image;
+      });
+
+      let newHtml = noImagesHtml;
+
+      newImages.forEach((newImage) => {
+        newHtml = newHtml.replace(
+          `{{ ${pluginName}__insert-image }}`,
+          newImage
+        );
+      });
+
+      pictures.forEach((picture) => {
+        newHtml = newHtml.replace(
+          `{{ ${pluginName}__insert-picture }}`,
+          picture
+        );
+      });
+
+      comments.forEach((comment) => {
+        newHtml = newHtml.replace(
+          `{{ ${pluginName}__insert-comment }}`,
+          comment
+        );
+      });
+
+      file.contents = new Buffer.from(newHtml);
       this.push(file);
     } catch (err) {
       this.emit('error', new PluginError(pluginName, err));
