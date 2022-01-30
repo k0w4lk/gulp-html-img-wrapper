@@ -57,7 +57,7 @@ gulp.task('html', function () {
 
 ## Excluding from wrapping
 
-Add to img tag ghiw-exclude attribute
+Add to img tag `ghiw-exclude` attribute
 
 **src/index.html**
 
