@@ -1,6 +1,6 @@
 # gulp-html-img-wrapper
 
-Gulp plugin for wrapping the &lt;img> tag with &lt;picture> adding &lt;source> tag in HTML files.
+Gulp plugin for wrapping the &lt;img> tag with &lt;picture> adding &lt;source> tag with .webp ext in HTML files.
 
 ## Install
 
@@ -11,8 +11,7 @@ npm i -D gulp-html-img-wrapper
 ## Main features
 
 - Works with formatted tags (no need to write tag in one line)
-- Ignore commented tags
-- Ignore existing picture tags
+- Ignores commented tags, existing picture tags, tags with empty or incorrect src attribute value
 - Possibility not to wrap certain tag(s)
 - Move class attribute from img tag to picture tag
 
