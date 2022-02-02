@@ -25,7 +25,12 @@
   },
   "homepage": "https://github.com/k0w4lk/gulp-html-img-wrapper#readme",
   "dependencies": {
+    "fancy-log": "^2.0.0",
     "gulp-util": "^3.0.8",
     "through2": "^4.0.2"
+  },
+  "devDependencies": {
+    "del": "^6.0.0",
+    "gulp": "^4.0.2"
   }
 }

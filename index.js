@@ -1,5 +1,6 @@
 const gulpUtil = require('gulp-util');
 const through = require('through2');
+const log = require('fancy-log');
 
 const pluginName = 'gulp-html-img-wrapper';
 
@@ -23,6 +24,7 @@ const gulpHtmlImgWrapper = function (userParams) {
       const params = {
         classMove: false,
         extensions: ['.jpg', '.png', '.jpeg'],
+        logger: true,
         ...userParams,
       };
 
@@ -44,47 +46,47 @@ const gulpHtmlImgWrapper = function (userParams) {
       const pictures = data.match(PICTURE_REGEX);
       const images = data.match(IMG_REGEX);
 
-      if(images) {
+      if (images) {
         const noCommentsHtml = data.replace(
           COMMENTS_REGEX,
           `{{ ${pluginName}__insert-comment }}`
         );
-  
+
         const noPicturesHtml = noCommentsHtml.replace(
           PICTURE_REGEX,
           `{{ ${pluginName}__insert-picture }}`
         );
-  
+
         const noImagesHtml = noPicturesHtml.replace(
           IMG_REGEX,
           `{{ ${pluginName}__insert-image }}`
         );
 
         newHtml = noImagesHtml;
-  
+
         const newImages = images.map((image) => {
           if (image.includes(EXCLUDE_ATTR)) {
             return image.replace(EXCLUDE_ATTR, '');
           }
-  
+
           if (EXTENSION_REGEX.test(image)) {
             const imageExt = image.match(EXTENSION_REGEX)[0];
             const srcValueWithoutExt = image
               .match(IMG_SRC_REGEX)[1]
               .replace(imageExt, '');
             let classAttr;
-  
+
             if (!params.extensions.includes(imageExt)) {
               return image;
             }
-  
+
             if (params.classMove) {
               if (IMG_CLASS_REGEX.test(image)) {
                 classAttr = image.match(IMG_CLASS_REGEX)[1];
                 image = image.replace(classAttr, '');
               }
             }
-  
+
             return (
               '<picture' +
               `${classAttr ? ' ' + classAttr : ''}` +
@@ -98,31 +100,40 @@ const gulpHtmlImgWrapper = function (userParams) {
           }
           return image;
         });
-  
+
         newImages.forEach((newImage) => {
           newHtml = newHtml.replace(
             `{{ ${pluginName}__insert-image }}`,
             newImage
           );
         });
-  
-        pictures.forEach((picture) => {
-          newHtml = newHtml.replace(
-            `{{ ${pluginName}__insert-picture }}`,
-            picture
-          );
-        });
-  
-        comments.forEach((comment) => {
-          newHtml = newHtml.replace(
-            `{{ ${pluginName}__insert-comment }}`,
-            comment
-          );
-        });
+
+        if (pictures) {
+          pictures.forEach((picture) => {
+            newHtml = newHtml.replace(
+              `{{ ${pluginName}__insert-picture }}`,
+              picture
+            );
+          });
+        }
+
+        if (comments) {
+          comments.forEach((comment) => {
+            newHtml = newHtml.replace(
+              `{{ ${pluginName}__insert-comment }}`,
+              comment
+            );
+          });
+        }
       }
 
       file.contents = new Buffer.from(newHtml || data);
       this.push(file);
+
+      if (images) {
+        const logMessage = images.length === 1 ? 'image was' : 'images were';
+        log(`${pluginName}:`, `${images.length} ${logMessage} wrapped`);
+      }
     } catch (err) {
       this.emit('error', new PluginError(pluginName, err));
     }
@@ -131,4 +142,3 @@ const gulpHtmlImgWrapper = function (userParams) {
 };
 
 module.exports = gulpHtmlImgWrapper;
-
