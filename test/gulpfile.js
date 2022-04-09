@@ -17,12 +17,7 @@ function clear() {
 function html() {
   return gulp
     .src(paths.html.src)
-    .pipe(
-      gulpHtmlImgWrapper({
-        classMove: false,
-        extensions: ['.jpg', '.png', '.jpeg'],
-      })
-    )
+    .pipe(gulpHtmlImgWrapper())
     .pipe(formatHtml())
     .pipe(gulp.dest(paths.html.dist));
 }

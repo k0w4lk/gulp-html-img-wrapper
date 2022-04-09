@@ -35,33 +35,31 @@ const gulpHtmlImgWrapper = function (userParams) {
       const IMG_SRC_REGEX = /<img[^>]*src=[\"\'](\S+)[\"\'][^>]*>/i;
       const IMG_REGEX = /<img[^>]*src=[\"|']([^\"\s]+)[\"|'][^>]*>/gi;
       const PICTURE_REGEX = /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
-      const COMMENTS_REGEX =
-        /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
+      const COMMENTS_REGEX = /(?=<!--)([\s\S]*?)-->/gi;
 
       const data = file.contents.toString();
 
       let newHtml;
 
       const comments = data.match(COMMENTS_REGEX);
-      const pictures = data.match(PICTURE_REGEX);
-      const images = data.match(IMG_REGEX);
+      const noCommentsHtml = data.replace(
+        COMMENTS_REGEX,
+        `{{ ${pluginName}__insert-comment }}`
+      );
+
+      const pictures = noCommentsHtml.match(PICTURE_REGEX);
+      const noPicturesHtml = noCommentsHtml.replace(
+        PICTURE_REGEX,
+        `{{ ${pluginName}__insert-picture }}`
+      );
+
+      const images = noPicturesHtml.match(IMG_REGEX);
+      const noImagesHtml = noPicturesHtml.replace(
+        IMG_REGEX,
+        `{{ ${pluginName}__insert-image }}`
+      );
 
       if (images) {
-        const noCommentsHtml = data.replace(
-          COMMENTS_REGEX,
-          `{{ ${pluginName}__insert-comment }}`
-        );
-
-        const noPicturesHtml = noCommentsHtml.replace(
-          PICTURE_REGEX,
-          `{{ ${pluginName}__insert-picture }}`
-        );
-
-        const noImagesHtml = noPicturesHtml.replace(
-          IMG_REGEX,
-          `{{ ${pluginName}__insert-image }}`
-        );
-
         newHtml = noImagesHtml;
 
         const newImages = images.map((image) => {
@@ -85,7 +83,7 @@ const gulpHtmlImgWrapper = function (userParams) {
               image = image.replace(`pictureClass=${pictureClass}`, '');
             }
 
-            return (
+            const newTag =
               '<picture' +
               `${pictureClass ? ' class=' + pictureClass : ''}` +
               '>' +
@@ -93,8 +91,9 @@ const gulpHtmlImgWrapper = function (userParams) {
               srcValueWithoutExt +
               '.webp" type="image/webp">' +
               image +
-              '</picture>'
-            );
+              '</picture>';
+
+            return newTag;
           }
           return image;
         });
@@ -105,30 +104,30 @@ const gulpHtmlImgWrapper = function (userParams) {
             newImage
           );
         });
+      }
 
-        if (pictures) {
-          pictures.forEach((picture) => {
-            newHtml = newHtml.replace(
-              `{{ ${pluginName}__insert-picture }}`,
-              picture
-            );
-          });
-        }
+      if (pictures) {
+        pictures.forEach((picture) => {
+          newHtml = newHtml.replace(
+            `{{ ${pluginName}__insert-picture }}`,
+            picture
+          );
+        });
+      }
 
-        if (comments) {
-          comments.forEach((comment) => {
-            newHtml = newHtml.replace(
-              `{{ ${pluginName}__insert-comment }}`,
-              comment
-            );
-          });
-        }
+      if (comments) {
+        comments.forEach((comment) => {
+          newHtml = newHtml.replace(
+            `{{ ${pluginName}__insert-comment }}`,
+            comment
+          );
+        });
       }
 
       file.contents = new Buffer.from(newHtml || data);
       this.push(file);
 
-      if (images) {
+      if (images && params.logger) {
         const logMessage = images.length === 1 ? 'image was' : 'images were';
         log(`${pluginName}:`, `${images.length} ${logMessage} wrapped`);
       }

@@ -13,22 +13,31 @@ npm i -D gulp-html-img-wrapper
 - Works with formatted tags (no need to write tag in one line)
 - Ignores commented tags, existing picture tags, tags with empty or incorrect src attribute value
 - Possibility not to wrap certain tag(s)
-- Move class attribute from img tag to picture tag
+- Adds a class for the picture tag after building the project using a special attribute from img tag in the source code
 
 ## Example
 
 **src/index.html**
 
 ```html
-<img src="./img/image-placeholder.jpg" alt="image placeholder" />
+<img
+  src="./img/image-placeholder.jpg"
+  alt="image placeholder"
+  class="image"
+  pictureClass="picture"
+/>
 ```
 
 **dist/index.html**
 
 ```html
-<picture>
+<picture class="picture">
   <source srcset="./img/image-placeholder.webp" type="image/webp" />
-  <img src="./img/image-placeholder.jpg" alt="image placeholder" />
+  <img
+    src="./img/image-placeholder.jpg"
+    alt="image placeholder"
+    class="image"
+  />
 </picture>
 ```
 
@@ -46,7 +55,7 @@ gulp.task('html', function () {
     .src('./src/*.html')
     .pipe(
       gulpHtmlImgWrapper({
-        classMove: false, // change for true to move class attribute from img tag to picture tag
+        logger: true, // false for not showing message with amount of wrapped img tags
         extensions: ['.jpg', '.png', '.jpeg'], // write your own extensions pack (case insensitive)
       })
     )
