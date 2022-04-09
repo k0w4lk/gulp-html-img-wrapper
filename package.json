@@ -1,7 +1,7 @@
 {
   "name": "gulp-html-img-wrapper",
   "version": "3.0.1",
-  "description": "Gulp plugin for wrapping the <img> tag with <picture> adding <source> tag in HTML files.",
+  "description": "Gulp plugin for wrapping the <img> tag with <picture> adding <source> tag with .webp ext in HTML files.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
