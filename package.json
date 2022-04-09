@@ -1,6 +1,6 @@
 {
   "name": "gulp-html-img-wrapper",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "Gulp plugin for wrapping the <img> tag with <picture> adding <source> tag in HTML files.",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "del": "^6.0.0",
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "gulp-format-html": "^1.2.5"
   }
 }

@@ -22,7 +22,6 @@ const gulpHtmlImgWrapper = function (userParams) {
 
     try {
       const params = {
-        classMove: false,
         extensions: ['.jpg', '.png', '.jpeg'],
         logger: true,
         ...userParams,
@@ -31,7 +30,8 @@ const gulpHtmlImgWrapper = function (userParams) {
       const EXCLUDE_ATTR = 'ghiw-exclude';
 
       const EXTENSION_REGEX = /(?<=src=[\'\"][\w\W]*)\.[\w]+(?=[\'\"])/i;
-      const IMG_CLASS_REGEX = /<img[^>]*(class=[\"\']\S+[\"\'])[^>]*>/i;
+      const PICTURE_CLASS_REGEX =
+        /<img[^>]*pictureClass=([\"\']\S+[\"\'])[^>]*>/i;
       const IMG_SRC_REGEX = /<img[^>]*src=[\"\'](\S+)[\"\'][^>]*>/i;
       const IMG_REGEX = /<img[^>]*src=[\"|']([^\"\s]+)[\"|'][^>]*>/gi;
       const PICTURE_REGEX = /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
@@ -74,26 +74,24 @@ const gulpHtmlImgWrapper = function (userParams) {
             const srcValueWithoutExt = image
               .match(IMG_SRC_REGEX)[1]
               .replace(imageExt, '');
-            let classAttr;
+            let pictureClass;
 
             if (!params.extensions.includes(imageExt)) {
               return image;
             }
 
-            if (params.classMove) {
-              if (IMG_CLASS_REGEX.test(image)) {
-                classAttr = image.match(IMG_CLASS_REGEX)[1];
-                image = image.replace(classAttr, '');
-              }
+            if (PICTURE_CLASS_REGEX.test(image)) {
+              pictureClass = image.match(PICTURE_CLASS_REGEX)[1];
+              image = image.replace(`pictureClass=${pictureClass}`, '');
             }
 
             return (
               '<picture' +
-              `${classAttr ? ' ' + classAttr : ''}` +
+              `${pictureClass ? ' class=' + pictureClass : ''}` +
               '>' +
-              "<source srcset='" +
+              '<source srcset="' +
               srcValueWithoutExt +
-              ".webp' type='image/webp'>" +
+              '.webp" type="image/webp">' +
               image +
               '</picture>'
             );
