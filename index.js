@@ -129,7 +129,10 @@ const gulpHtmlImgWrapper = function (userParams) {
 
       if (images && params.logger) {
         const logMessage = images.length === 1 ? 'image was' : 'images were';
-        log(`${pluginName}:`, `${images.length} ${logMessage} wrapped`);
+        log(
+          `${pluginName}:`,
+          `${images.length} ${logMessage} wrapped in ${file.relative}`
+        );
       }
     } catch (err) {
       this.emit('error', new PluginError(pluginName, err));
