@@ -31,7 +31,7 @@ const gulpHtmlImgWrapper = function (userParams) {
 
       const EXTENSION_REGEX = /(?<=src=[\'\"][\w\W]*)\.[\w]+(?=[\'\"])/i;
       const PICTURE_CLASS_REGEX =
-        /<img[^>]*pictureClass=([\"\']\S+[\"\'])[^>]*>/i;
+        /<img[^>]*(pictureClass=([\"\']\S+[\"\']))[^>]*>/i;
       const IMG_SRC_REGEX = /<img[^>]*src=[\"\'](\S+)[\"\'][^>]*>/i;
       const IMG_REGEX = /<img[^>]*src=[\"|']([^\"\s]+)[\"|'][^>]*>/gi;
       const PICTURE_REGEX = /<\s*picture[^>]*>([\w\W]*?)<\s*\/\s*picture\s*>/gi;
@@ -64,6 +64,10 @@ const gulpHtmlImgWrapper = function (userParams) {
 
         const newImages = images.map((image) => {
           if (image.includes(EXCLUDE_ATTR)) {
+            if (PICTURE_CLASS_REGEX.test(image)) {
+              const picClassAttr = image.match(PICTURE_CLASS_REGEX)[1];
+              image = image.replace(picClassAttr, '');
+            }
             return image.replace(EXCLUDE_ATTR, '');
           }
 
@@ -79,7 +83,7 @@ const gulpHtmlImgWrapper = function (userParams) {
             }
 
             if (PICTURE_CLASS_REGEX.test(image)) {
-              pictureClass = image.match(PICTURE_CLASS_REGEX)[1];
+              pictureClass = image.match(PICTURE_CLASS_REGEX)[2];
               image = image.replace(`pictureClass=${pictureClass}`, '');
             }
 
