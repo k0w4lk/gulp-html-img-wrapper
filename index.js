@@ -39,7 +39,8 @@ const gulpHtmlImgWrapper = function (userParams) {
 
       const data = file.contents.toString();
 
-      let newHtml;
+      let newHtml,
+        wrappedImagesCount = 0;
 
       const comments = data.match(COMMENTS_REGEX);
       const noCommentsHtml = data.replace(
@@ -93,6 +94,8 @@ const gulpHtmlImgWrapper = function (userParams) {
               image +
               '</picture>';
 
+            wrappedImagesCount++;
+
             return newTag;
           }
           return image;
@@ -127,9 +130,10 @@ const gulpHtmlImgWrapper = function (userParams) {
       file.contents = new Buffer.from(newHtml || data);
       this.push(file);
 
-      if (images && params.logger) {
-        const logMessage = images.length === 1 ? 'image was' : 'images were';
-        log(`${pluginName}:`, `${images.length} ${logMessage} wrapped`);
+      if (wrappedImagesCount && params.logger) {
+        const logMessage =
+          wrappedImagesCount === 1 ? 'image was' : 'images were';
+        log(`${pluginName}:`, `${wrappedImagesCount} ${logMessage} wrapped`);
       }
     } catch (err) {
       this.emit('error', new PluginError(pluginName, err));
