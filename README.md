@@ -55,7 +55,7 @@ gulp.task('html', function () {
     .src('./src/*.html')
     .pipe(
       gulpHtmlImgWrapper({
-        logger: true, // false for not showing message with amount of wrapped img tags
+        logger: true, // false for not showing message with amount of wrapped img tags for each file
         extensions: ['.jpg', '.png', '.jpeg'], // write your own extensions pack (case insensitive)
       })
     )
