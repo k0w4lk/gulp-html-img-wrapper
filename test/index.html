@@ -10,13 +10,31 @@
   <body>
     <img src="" alt="test1" />
 
+    <img
+      src=""
+      alt="test1.2"
+      ghiw-responsive-media="max-width: 799px; min-width: 800px"
+    />
+
     <!-- 
       <div>
         <img src="test.png" alt="test2" />
       </div> 
     -->
 
-    <img src="test.png" alt="test3" class="test" pictureClass="pictureTest1" />
+    <img
+      src="test.png"
+      alt="test3"
+      class="test"
+      ghiw-picture-class="pictureTest1"
+    />
+
+    <img
+      src="test.png"
+      alt="test3.1"
+      class="test"
+      ghiw-picture-class="pictureTest1-1 pictureTest1-2"
+    />
 
     <picture class="pictureTest">
       <source srcset="test.webp" type="image/webp" />
@@ -28,7 +46,7 @@
       <img src="test.png" alt="test5" class="test" />
     </picture> -->
 
-    <img src="test.webp" alt="test6" />
+    <img src="test.webp" alt="test6" ghiw-picture-class="test" />
 
     <img src="test.gif" alt="test7" />
 
@@ -49,10 +67,52 @@
 
     <img
       src="test.jpeg"
-      alt="test14"
+      alt="test14.1"
       class="test"
-      pictureClass="test"
+      ghiw-picture-class="picture test"
+      ghiw-responsive-filenames="test1; test2"
+      ghiw-responsive-media="max-width: 799px; min-width: 800px"
+      ghiw-responsive-extensions="avif; webp"
+    />
+
+    <img
+      src="image.jpeg"
+      alt="image"
+      class="image"
+      ghiw-responsive-filenames="image1; image2"
+      ghiw-responsive-media="max-width: 799px; min-width: 800px"
+      ghiw-responsive-extensions="avif; webp"
+    />
+
+    <img
+      src="test.jpeg"
+      alt="test14.2"
+      class="test"
+      ghiw-picture-class="picture test"
+      ghiw-responsive-filenames="test1; test2"
+      ghiw-responsive-media="max-width: 799px; min-width: 800px"
+      ghiw-responsive-extensions="avif; webp"
       ghiw-exclude
     />
+
+    <img
+      src="test"
+      alt="test14.3"
+      class="test"
+      ghiw-picture-class="picture test"
+      ghiw-responsive-filenames="test1; test2"
+      ghiw-responsive-media="max-width: 799px; min-width: 800px"
+      ghiw-responsive-extensions="avif; webp"
+    />
+
+    <img
+      src="test.jpeg"
+      alt="test15"
+      class="test"
+      ghiw-picture-class="test"
+      ghiw-exclude
+    />
+
+    <img src="../../test.png" alt="test16" />
   </body>
 </html>
