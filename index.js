@@ -1,10 +1,8 @@
-const gulpUtil = require('gulp-util');
-const through = require('through2');
 const log = require('fancy-log');
+const pluginError = require('plugin-error');
+const through = require('through2');
 
 const pluginName = 'gulp-html-img-wrapper';
-
-const PluginError = gulpUtil.PluginError;
 
 const gulpHtmlImgWrapper = function (userParams) {
   return through.obj(function (file, enc, cb) {
@@ -15,7 +13,7 @@ const gulpHtmlImgWrapper = function (userParams) {
     }
 
     if (file.isStream()) {
-      cb(new PluginError(pluginName, 'Streaming not supported'));
+      cb(new pluginError(pluginName, 'Streaming not supported'));
 
       return;
     }
@@ -195,7 +193,7 @@ const gulpHtmlImgWrapper = function (userParams) {
         );
       }
     } catch (err) {
-      this.emit('error', new PluginError(pluginName, err));
+      this.emit('error', new pluginError(pluginName, err));
     }
     cb();
   });

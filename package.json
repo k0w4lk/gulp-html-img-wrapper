@@ -1,6 +1,6 @@
 {
   "name": "gulp-html-img-wrapper",
-  "version": "3.0.4",
+  "version": "4.0.1",
   "description": "Gulp plugin for wrapping the <img> tag with <picture> adding <source> tag with .webp ext in HTML files.",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/k0w4lk/gulp-html-img-wrapper#readme",
   "dependencies": {
     "fancy-log": "^2.0.0",
-    "gulp-util": "^3.0.8",
+    "plugin-error": "^2.0.0",
     "through2": "^4.0.2"
   },
   "devDependencies": {
