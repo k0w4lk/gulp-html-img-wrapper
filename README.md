@@ -16,10 +16,6 @@ npm i -D gulp-html-img-wrapper
 - Adds a class for the picture tag after building the project using a special attribute from img tag in the source code.
 - Could set multiple sources to make images responsive according to media queries.
 
-## NOTE!
-
-- Images with the same name but different extensions should be placed in the same folder.
-
 ## Examples:
 
 <br />
