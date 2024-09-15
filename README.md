@@ -1,6 +1,6 @@
 # gulp-html-img-wrapper
 
-Gulp plugin for wrapping in HTML files the &lt;img> tag with &lt;picture> adding single &lt;source> tag with .webp extension by default or multiple using responsive images approach.
+Gulp 5 plugin for wrapping in HTML files the &lt;img> tag with &lt;picture> adding single &lt;source> tag with .webp extension by default or multiple using responsive images approach.
 
 ## Install
 
@@ -114,21 +114,17 @@ Add to img tag `ghiw-responsive-filenames`, `ghiw-responsive-media`, `ghiw-respo
 **src/gulpfile.js**
 
 ```javascript
-import gulpHtmlImgWrapper from 'gulp-html-img-wrapper';
-/*
- * or
- * const gulpHtmlImgWrapper = require('gulp-html-img-wrapper');
- */
+import gulpHtmlImgWrapper from "gulp-html-img-wrapper";
 
-gulp.task('html', function () {
+gulp.task("html", function () {
   gulp
-    .src('./src/*.html')
+    .src("./src/*.html")
     .pipe(
       gulpHtmlImgWrapper({
         logger: true, // false for not showing message with amount of wrapped img tags for each file
-        extensions: ['.jpg', '.png', '.jpeg'], // write your own extensions pack (case insensitive)
+        extensions: ["jpg", "png", "jpeg"], // write your own extensions pack (case insensitive)
       })
     )
-    .pipe(gulp.dest('./dest/'));
+    .pipe(gulp.dest("./dest/"));
 });
 ```

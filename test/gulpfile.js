@@ -1,20 +1,20 @@
-const gulp = require('gulp');
-const del = require('del');
-const formatHtml = require('gulp-format-html');
-const gulpHtmlImgWrapper = require('../index.js');
+import gulp from "gulp";
+import formatHtml from "gulp-format-html";
+import { gulpHtmlImgWrapper } from "../build/index.js";
+import { deleteAsync } from "del";
 
 const paths = {
   html: {
-    src: './index.html',
-    dist: './dist/',
+    src: "./index.html",
+    dist: "./dist/",
   },
 };
 
-function clear() {
-  return del([paths.html.dist]);
+export function clear() {
+  return deleteAsync([paths.html.dist]);
 }
 
-function html() {
+export function html() {
   return gulp
     .src(paths.html.src)
     .pipe(gulpHtmlImgWrapper())
@@ -24,7 +24,4 @@ function html() {
 
 const build = gulp.series(clear, html);
 
-exports.clear = clear;
-exports.html = html;
-
-exports.default = build;
+export default build;
