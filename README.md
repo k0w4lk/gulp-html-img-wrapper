@@ -2,6 +2,8 @@
 
 Gulp 5 plugin for wrapping in HTML files the &lt;img> tag with &lt;picture> adding single &lt;source> tag with .webp extension by default or multiple using responsive images approach.
 
+# ⛔️ DEPRECATED: This repository is no longer maintained
+
 ## Install
 
 ```bash
